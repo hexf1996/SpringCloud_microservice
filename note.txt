@@ -1,0 +1,305 @@
+Spring-Cloud:
+    https://spring.io/projects/spring-cloud-netflix#overview
+    http://springcloud.cn/
+    https://www.springcloud.cc/
+    https://start.spring.io/
+
+？？？？？？？？？？？？？？？热启动配置？？？？？？？？？？？？？？
+
+Eureka:实现了AP原则，及CAP中的额AP：可用性（Availability），分区容错性；Zookeeper遵循CP原则：强一致性（Consistency）、分区容错性（Part Tolerance）
+	由Netflix公司开发维护
+	实现服务的注册和发现，利用的是心跳机制检测服务是否存活；
+	采用的是C-S的设计架构；
+	在EurekaServer中的服务注册表中进行加入服务并维护；
+
+Dubbo使用Zookeeper实现服务的注册和发现
+
+Ribbon：
+Spring Cloud-Ribbon：基于Netflix Ribbon实现的客户端负载均衡 工具
+      客户端负载均衡算法
+      在配置文件中列出Load Balance（LB）后面的所有机器，Ribbon自动帮助选择连接机器
+        LB：集中式LB（偏硬件，如F5）、进程内LB（偏软件）
+      @LoadBalanced
+
+      默认负载均衡算法是轮循算法；
+      可以自定义配置负载均衡算法，如随机。根据响应时间加权。
+      Ribbon的组件IRule：可根据特定算法从服务列表中选取一个要访问的服务
+
+Feign: 负载均衡
+    是一个声明式WebService客户端，使用方法是定义一个接口，再加上注解，同时也支持JAX-RS标准的注解；
+    也支持可插拔式的编码器和解码器
+    可以与Eureka和Ribbon联合使用达到负载均衡的效果
+
+Feign对比Ribbon：
+        Feign是面向接口调用，通过接口调用方法；
+        |---- com.hexf.springCloud.service.DeptClientFeignService，定义的接口
+        |---- com.hexf.springcloud.DeptConsumerFeign_App
+              |--- @EnableFeignClients(basePackages = {"com.hexf.springcloud"})
+              |--- @ComponentScan("com.hexf.springcloud")
+        Ribbon是用RestTemplate调用REST，客户端的负载均衡
+        |---- RestTemplate请求服务
+        |---- 自定义的均衡算法：com.hexf.rule.MyIRule，com.hexf.springcloud.DeptConsumer80_App
+
+Hystrix:熔断器，用于服务熔断、服务降级等。
+    采用命令模式，将外部资源的调用和fallback逻辑封装成一个命令对象（HystrixCommand/HystrixObservableCommand），每个Command创建时
+    都要指定GroupKey和commandKey（区分资源）以及隔离策略。
+    有两种隔离策略：
+        线程池隔离：设置线程池的参数：名称、容量、排队超时等
+        信号量隔离：配置最大并发数
+    主要是在某个服务故障的时候提供调用者可认知的返回信息，以防抛出不可处理的异常或者程序一直等待。
+    降级处理是在客户端实现的，是整体资源不够的时候，挂起某个服务，客户端返回缺省值
+    服务熔断是服务出问题或者异常时，直接熔断服务，而不是服务一直等待，防止服务雪崩
+    |---- com.hexf.springcloud.DeptProvider8001_App-----@EnableCircuitBreaker
+    |---- 服务熔断：com.hexf.springcloud.controller.DeptController---@HystrixCommand(fallbackMethod = "exceptionHystrix")
+    |---- 服务降级：
+            |---- com.hexf.springCloud.service.HystrixFeedbackFactory
+            |---- com.hexf.springCloud.service.DeptClientFeignService
+                  |---- @FeignClient(value = "microserviceCloud-Dept", fallbackFactory = HystrixFeedbackFactory.class)
+
+
+    	Sentinel	Hystrix
+    隔离策略	基于并发数	线程池隔离/信号量隔离
+    熔断降级策略	基于响应时间或失败比率	基于失败比率
+    实时指标实现	滑动窗口	滑动窗口（基于 RxJava）
+    规则配置	支持多种数据源	支持多种数据源
+    扩展性	多个扩展点	插件的形式
+    基于注解的支持	即将发布	支持
+    调用链路信息	支持同步调用	不支持
+    限流	基于 QPS / 并发数，支持基于调用关系的限流	不支持
+    流量整形	支持慢启动、匀速器模式	不支持
+    系统负载保护	支持	不支持
+    实时监控 API	各式各样	较为简单
+    控制台	开箱即用，可配置规则、查看秒级监控、机器发现等	不完善
+    常见框架的适配	Servlet、Spring Cloud、Dubbo、gRPC 等	Servlet、Spring Cloud Netflix
+
+HystrixDashbord:熔断监控
+    com.hexf.springcloud.HystrixDashbord9001_App
+    http://localhost:port/hystrix
+
+Zuul:路由
+    com.hexf.springcloud.ZuulGateway9527_App
+    提供的三大功能：路由+过滤+代理
+    注册在Eureka服务中
+    @EnableZuulProxy
+
+
+
+
+MQ：
+    削峰、解耦、异步
+    activemq.apache.org
+    默认端口是61616
+    三种查看后台进程的方法：
+        a. ps -ef | grep activemq | grep -v grep
+        b. netstat -anp | grep 61616
+        c. lsof -i:61616
+    客户端访问ActiveMq：ip:8161------admin/admin
+
+    JMS：
+        点对点方式（一对一）：消费者消费消息是平分式的，即有多个消费者同时消费一个队列里的消息时，是平均分配的
+        发布-订阅方式（一对多）：只能订阅发布之后的消息，是有时间先后性限制的，不能订阅到生产者之前发布的消息，所以一般是先启动
+                                 消费者，然后再启动生产者
+        比较：
+            a. Queue方式模式为负载均衡模式，Topic为发布-订阅模式；
+            b. Queue消息是有状态的，保存在一个位置，Topic没有状态；
+            c. Topic随着消费者的增多处理效率会降低，因为每个消费者都会消费消息，而Queue则不会；
+            d. Topic消息有时效性。
+
+    JMS 消息结构四大元素：Provider(MQ)、Producer、Consumer、Message
+    Message：消息头、消息体、消息属性
+        消息头：
+            目的地：Destination
+            持久模式和非持久模式：DeliveryMode
+            过期性：默认永不过期
+            优先级：0-9，加急5-9，一般0-4，并非严重按照优先级，但是加急的必定比一般的优先
+            MessageID：唯一性
+        消息体：有5种：TextMessage、MapMessage、BytesMessage、StreamMessage、ObjectMessage；
+        消息属性：消息头字段以外的值，键值对形式
+
+    JMS消息的可靠性：
+    如何保证消息队列的高可用？
+        持久性：MessageProducer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            TOPIC的持久化在注册过一次之后，第二次恢复会接收到第一次注册之后的生产者生产的消息
+        事务性：Connection.createSession(boolean transacted, int acknowledgeMode)
+            偏生产者；
+        签收：Connection.createSession(boolean transacted, int acknowledgeMode)
+            偏消费者；
+        事务大于签收：即开了事务，commit之后消息会被消费；手动签收，开了事务，执行了TextMessage.acknowledge()，事务不commit，消息还是会被重复消费
+        可持久化（http://activemq.apache.org/persistence）：
+            在另外的机器上存储MQ的数据，保证高可用行，先主要有两种： Replicated LevelDB Store，KahaDB，JDBC，AMQ
+            AMQ：版本5以前的，基于文件的持久化机制；
+            KahaDB:基于日志存储的持久化机制，是Active5.4开始默认的持久化插件，类似于Redis的AOF
+                    消息存储是使用一个事务日志（db-num.log）和仅仅使用一个索引文件(db.data)存储所有的地址，有锁Lock
+            LevelDB：类似KahaDB，5.8之后引进的，但比KahaDB持久性更好
+            MySQL(JDBC)：会生成三个表，分别为MSGS（存储具体消息，消费之后会清除），LOCKS，ACKS（存储消息队列和主题）
+                  坑：若操作系统名中有下划线"_"，则可能会报错，Initialize ERROR，只需更改系统名并重启即可
+        ActiveMQ集群：
+             zookeeper+Replicated LevelDB
+
+    客户端端口8161修改conf/jetty.xml，服务端端口61616修改conf/activemq.xml文件
+
+    具体哪些消息会引起消息重发？
+        1、client（消费者）用了事务但是在session中设置了rollback
+        2、client用了事务但是在关闭之前没有commit；
+        3、client在使用手动投递模式的时候，在session中调用了recover()方法；
+    默认消息重发时间间隔是重发次数？
+        重发时间间隔：1
+        最大重发次数：6，设置为-1的时候，表示没有限制
+    有毒消息Poison Ack，谈谈理解？
+        一个消息被重发超过默认的最大重发次数（6）时，消费端会给MQ发送一个“poison Ack”，表示这个消息是有毒消息，
+        告诉broker不要再发送了。
+        有毒消息存储在死信队列中（DLQ）；
+    死信队列：用于处理失败的消息
+        配置案例：
+            自动删除过期消息；
+            存放非持久的消息到死信队列，默认不放置非持久的消息
+    消息的幂等性（解决重复消费的问题）：
+        网络延迟传输中，会造成MQ的重试，导致消息的重复消费
+        解决方式：
+            1、给消息做一个唯一主键，插入数据库（不推荐）
+            2、准备一个第三方（如：Redis）做消费记录，给消息分配一个ID，如果消费过，则存储到第三方，后面消费时先查第三方
+
+    Broker：MQ的一个服务器实例对象；
+            com.hexf.activeMq.broker.EmbedBroker
+
+    ActiveMQ传输协议：TCP、NIO（性能更好）、AMQP，默认采用的消息协议是openwire,即对应的TCP
+    NIO 加强：Auto+NIO
+        修改cfg配置：<transportConnector name="auto+nio" uri="auto+nio://localhost:5671"/>
+
+
+Docker:在任何地方构建，发布和运行在任何环境，有利于整体发布的容器虚拟化技术，三要素：仓库、容器、镜像、
+    软件带环境安装，包括配置、代码等等；
+    一处打包，各种机器环境都可以直接安装运行
+
+    镜像：一个只读的模板
+    容器：用镜像创建的运行实例
+    仓库：集中存放镜像文件的场所
+
+    安装：
+        参考博客：
+            https://blog.csdn.net/wanchaopeng/article/details/88796354
+            https://yq.aliyun.com/articles/585178
+        CenOS6.8安装命令：
+            yum install -y epel-release
+            yum install -y docker-io
+            Docker配置文件：/etc/sysconfig/docker
+            启动后台服务：service docker start
+            docker version 验证
+
+        配置阿里云镜像加速器：
+            vim /etc/sysconfig/docker
+                增加args参数：参数值为阿里云镜像加速器地址
+                    other_args="--registry-mirror=https://jnlkf5cs.mirror.aliyuncs.com"
+        运行Docker镜像：
+            docker run hello-world
+    Docker原理：
+        Docker守护进程运行在主机上，然后通过Socket连接客户端访问，守护进程从客户端接收命令并管理运行在主机上的容器
+        容器是一个运行时环境，也即Docker的logo上的集装箱
+    为什么Docker比VM快？
+        Docker有更少的抽象层，减少了硬件资源的虚拟化，不需要重新加载操作系统内核，直接用宿主机的操作系统；
+        Docker面向软件，虚拟机面向硬件；
+
+    常用镜像命令：
+        docker version
+        docker info
+        docker --help
+        docker images:查看镜像
+        docker images -qa：查看所有镜像的ID
+        docker search Tomcat： 搜索tomcat 镜像
+        docker search -s 30 tomcat:搜索标星超过30的Tomcat镜像
+        docker rmi -f $(docker images -qa):强制删除所有镜像
+        docker pull tomcat： 更新拉取镜像
+    常用容器命令：
+        docker run -it -name CentOS1118 IMAGE_NAME：i表示交互，t表示伪终端,-name命名
+        docker ps:列出docker中所有正在运行的进程（容器）
+        exit:退出容器，容器停止
+        Ctrl + P + Q：退出容器，但是容器不停止
+        docker start container_id：启动容器
+        docker stop container_id：关闭容器
+        docker kill container_id：强制关闭容器
+        docker rm image_id
+        docker rm -f $(docker images -q -a):强制删除所有容器
+        docker run -d centos: 启动守护式容器，即在后台运行，界面不显示,因为没有交互的前端，所以会立马自杀
+        docker logs -t -f -tail 10 image_id：查看日志,-t时间，-f追加，-tail 10打印最后10条
+        docker inspect container_id：查看容器内部的细节信息
+        docker attach container_id:重新进入容器
+        docker exec -t container_id ls -l /tmp：重新进入容器执行ls -l /tmp，直接展示结果
+        docker cp container_id:/temp/test.txt /root：从容器拷贝数据到宿主机,/temp/test.txt容器文件路径 /root宿主机路径
+
+        docker commit -a="test" -m="tomcat del docs" container_id test/tomcat2.0：提交容器副本使之成为一个新的镜像,-m描述信息
+                -a提交人信息，test/tomcat2.0镜像空间/容器名字
+        docker run -it -p 8888:8080 tomcat：在Docker上运行Tomcat，映射到宿主机的端口为8888
+        docker run -it -P tomcat：-P随机分配映射端口
+
+     Docker 推送：
+        $ sudo docker login --username=hexiaofei_1996 registry.cn-shenzhen.aliyuncs.com
+        $ sudo docker tag [ImageId] registry.cn-shenzhen.aliyuncs.com/test_hexf/tt:[镜像版本号]
+        $ sudo docker push registry.cn-shenzhen.aliyuncs.com/test_hexf/tt:[镜像版本号]
+
+    Docker镜像：轻量级的可执行的独立软件包，底层原理是UnionFS;
+    UnionFS:联合文件系统，一种分层的轻量级的高性能的文件系统，支持对文件系统的修改作为一次提交来进行一层一层的叠加；
+            是Docker镜像的基础.
+            镜像模板由多层构成；
+    Docker采用分层的原因：共享资源
+        每一层都可以被共享
+    Docker容器数据卷：数据的持久化保存地方，容器之间可以共享数据；
+        特点：容器间、容器与宿主机间数据共享；没有一个容器使用的时候数据失效；
+        添加方式：
+            a. 命令添加：
+                docker run -it -v /宿主机绝对路径:/容器内目录 镜像名   ------可读写
+                docker run -it -v /宿主机绝对路径:/容器内目录 --privileged=true 镜像名   ------可读写,--privileged=true权限限制问题
+                docker run -it -v /宿主机绝对路径:/容器内目录:ro 镜像名   ----ro:只读，不能写
+            b. DockerFile添加
+                1. 手动编写dockerFile文件
+                    # volumes test
+                    FROM centos
+                    VOLUME ["/dataVolume1", "/dataVolume2"]
+                    CMD echo "finish ---- succeed"
+                    CMD /bin/bash
+                2. docker build -f /root/DockerFile -t hexf/centos：-f表示在root下的脚本文件DockerFile，-t表示由hexf构建的新的CentOS镜像
+                3. run
+    数据卷容器：
+        数据在容器间传递共享
+            docker run -it --name dc02 --volumes-from dc01 hexf/centos: dc01容器1，dc02容器2，复制传递容器卷
+    DockerFile：用来构建docker镜像的脚本文件，由一系列命令和参数构成；
+        scratch：本源镜像，即所有的镜像的源头
+        dockerFile规则:
+            保留字指令必须要有参数
+            指令从上向下执行
+        保留字：
+            FROM：镜像源
+            MAINTAINER：镜像维护者的邮箱和姓名
+            RUN：
+            EXPOSE：暴露端口号
+            WORKDIR：终端进来后登陆的工作目录
+            ENV：构建过程中设置环境变量
+            ADD：将某个压缩文件增加到镜像中，拷贝+解压缩
+            COPY：拷贝
+            VOLUME：容器数据卷
+            CMD：执行某个命令，只有最后一条生效
+            ENTRYPOINT：指定一个容器启动时要运行的命令
+            ONBUILD：
+        例子：空centOS设置登录目录，安装VIM及网络查看工具ifconfig
+            FROM centos:6
+            ENV mypath /home
+            WORKDIR $mypath
+            RUN yum install -y vim
+            RUN yun install -y net-tools
+            EXPOSE 80
+            CMD /bin/bash
+        docker build -f /testDocker/dockerfile -t mycentos:3 .
+        docker history container_id： 查看历史修改记录
+
+
+ES:
+    Docker 安装：
+        docker search elasticsearch
+        docker pull elasticsearch
+        docker run -e ES_JAVA_OPTS="-Xms256m -Xmx256m" -d -p 9200:9200 -p 9300:9300 --name ES01 id
+    ip:9200
+    官网：
+        elastic.co
+        https://www.elastic.co/guide/cn/elasticsearch/guide/current/_search_lite.html
+    存储整个对象或文档
+    MySQL：库-----》表-----》数据---》列
+    ES:    索引---》类型---》文档---》属性

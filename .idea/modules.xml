@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/activeMq/activeMq.iml" filepath="$PROJECT_DIR$/activeMq/activeMq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_ElasticSearch/microserverCloud_ElasticSearch.iml" filepath="$PROJECT_DIR$/microserverCloud_ElasticSearch/microserverCloud_ElasticSearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_Eureka_7001/microserverCloud_Eureka_7001.iml" filepath="$PROJECT_DIR$/microserverCloud_Eureka_7001/microserverCloud_Eureka_7001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_Eureka_7002/microserverCloud_Eureka_7002.iml" filepath="$PROJECT_DIR$/microserverCloud_Eureka_7002/microserverCloud_Eureka_7002.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_Eureka_7003/microserverCloud_Eureka_7003.iml" filepath="$PROJECT_DIR$/microserverCloud_Eureka_7003/microserverCloud_Eureka_7003.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_Zuul_Gateway_9527/microserverCloud_Zuul_Gateway_9527.iml" filepath="$PROJECT_DIR$/microserverCloud_Zuul_Gateway_9527/microserverCloud_Zuul_Gateway_9527.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_provider_dept_hystrixDashbord/microserverCloud_provider_dept_hystrixDashbord.iml" filepath="$PROJECT_DIR$/microserverCloud_provider_dept_hystrixDashbord/microserverCloud_provider_dept_hystrixDashbord.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserverCloud_provider_test_8001/microserverCloud_provider_test_8001.iml" filepath="$PROJECT_DIR$/microserverCloud_provider_test_8001/microserverCloud_provider_test_8001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud.iml" filepath="$PROJECT_DIR$/microserviceCloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_Task/microserviceCloud_Task.iml" filepath="$PROJECT_DIR$/microserviceCloud_Task/microserviceCloud_Task.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_api/microserviceCloud_api.iml" filepath="$PROJECT_DIR$/microserviceCloud_api/microserviceCloud_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_consumer_dept_80/microserviceCloud_consumer_dept_80.iml" filepath="$PROJECT_DIR$/microserviceCloud_consumer_dept_80/microserviceCloud_consumer_dept_80.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_consumer_dept_Feign/microserviceCloud_consumer_dept_Feign.iml" filepath="$PROJECT_DIR$/microserviceCloud_consumer_dept_Feign/microserviceCloud_consumer_dept_Feign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8001/microserviceCloud_provider_dept_8001.iml" filepath="$PROJECT_DIR$/microserviceCloud_provider_dept_8001/microserviceCloud_provider_dept_8001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8002/microserviceCloud_provider_dept_8002.iml" filepath="$PROJECT_DIR$/microserviceCloud_provider_dept_8002/microserviceCloud_provider_dept_8002.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8003/microserviceCloud_provider_dept_8003.iml" filepath="$PROJECT_DIR$/microserviceCloud_provider_dept_8003/microserviceCloud_provider_dept_8003.iml" />
+    </modules>
+  </component>
+</project>

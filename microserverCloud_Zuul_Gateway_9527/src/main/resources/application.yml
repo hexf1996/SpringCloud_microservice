@@ -1,0 +1,27 @@
+server:
+  port: 9527
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    instance-id: zuul-gateway-9527
+    prefer-ip-address: true
+
+spring:
+  application:
+    name: Zuul-Gateway-9527
+
+#http://127.0.0.1:9527/hexf/mydept/dept/get/3
+zuul:
+  prefix: /hexf/    # 增加URL的前缀
+  ignored-services: "*"   # 不允许访问microservicecloud-dept名称的，只能访问重定义的路径mydept
+  routes:
+    mydept.serviceId: microservicecloud-dept
+    mydept.path: /mydept/**
+
+info:
+  app.name: microserverCloud-zuul-gateway-9527
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$

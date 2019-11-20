@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/activeMq" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_ElasticSearch" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_Eureka_7001" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_Eureka_7002" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_Eureka_7003" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_Zuul_Gateway_9527" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_provider_dept_hystrixDashbord" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserverCloud_provider_test_8001" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_Task" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_consumer_dept_80" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_consumer_dept_Feign" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8001" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8001/src/main/resources/mybatis/mapper/DeptMapper.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8002" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8002/src/main/resources/mybatis/mapper/DeptMapper.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8003" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microserviceCloud_provider_dept_8003/src/main/resources/mybatis/mapper/DeptMapper.xml" charset="GBK" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

@@ -1,0 +1,20 @@
+server:
+  port: 8001
+
+
+spring:
+  application:
+    name: microserviceCloud-Dept-Test
+
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: provider-dept-8001   # 别名修改
+    prefer-ip-address: true  # Eureka界面鼠标放置在超链接上是左下角显示真实IP地址
+
+info:
+  app.name: microserverCloud-provider-dept
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$
